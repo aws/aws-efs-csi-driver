@@ -62,6 +62,11 @@ spec:
           volumeMounts:
             - name: socket-dir
               mountPath: /var/lib/csi/sockets/pluginproxy/
+{{- if .Values.awsCredentialsSecret }}
+            - name: aws-credentials
+              mountPath: /root/.aws
+              readOnly: true
+{{- end }}
           ports:
             - name: healthz
               containerPort: 9909
@@ -98,4 +103,9 @@ spec:
       volumes:
         - name: socket-dir
           emptyDir: {}
+{{- if .Values.awsCredentialsSecret }}
+        - name: aws-credentials
+          secret:
+            secretName: {{ .Values.awsCredentialsSecretName }}
+{{- end }}
 {{- end }}
